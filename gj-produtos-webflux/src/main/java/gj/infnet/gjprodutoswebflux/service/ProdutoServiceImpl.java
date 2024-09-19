@@ -1,7 +1,7 @@
-package gj.infnet.gjfornecedores.service;
+package gj.infnet.gjprodutoswebflux.service;
 
 
-import gj.infnet.gjfornecedores.model.Produto;
+import gj.infnet.gjprodutoswebflux.model.Produto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;

@@ -26,7 +26,7 @@ public class FornecedorController {
     }
 
     @DeleteMapping("/{id}")
-    public Fornecedor excluir(@PathVariable id) {
+    public Fornecedor excluir(@PathVariable Long id) {
         return fornecedorService.delete(id);
     }
 

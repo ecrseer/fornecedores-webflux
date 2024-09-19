@@ -14,4 +14,6 @@ public class Produto {
     private Long id;
     private String nome;
     private Long valor;
+
+    private Fornecedor fornecedor;
 }

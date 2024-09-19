@@ -16,12 +16,28 @@ public class FornecedorServiceImpl {
         return this.fornecedorRepository.findById(id).orElse(null);
     }
 
-    public Fornecedor save(Fornecedor fornecedor) {
+    public Fornecedor save(Fornecedor fornecedor) throws Exception {
+
+        fornecedor.setId(null);
+
         return this.fornecedorRepository.save(fornecedor);
+
+
     }
 
     public List<Fornecedor> findAll() {
         return (List<Fornecedor>) fornecedorRepository.findAll();
+    }
+
+    public Fornecedor update(Fornecedor fornecedor) {
+        this.findById(fornecedor.getId());
+        return this.fornecedorRepository.save(fornecedor);
+    }
+
+    public Fornecedor delete(Long id) {
+        Fornecedor fornecedor = this.findById(id);
+        this.fornecedorRepository.delete(fornecedor);
+        return fornecedor;
     }
 
 }

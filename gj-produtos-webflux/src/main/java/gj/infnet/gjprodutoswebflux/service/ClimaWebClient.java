@@ -1,10 +1,10 @@
 package gj.infnet.gjprodutoswebflux.service;
 
-import gj.infnet.gjprodutoswebflux.model.AdvCidade;
-import gj.infnet.gjprodutoswebflux.model.Produto;
+import gj.infnet.gjprodutoswebflux.model.clima.AdvCidadeClima;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class ClimaWebClient {
@@ -15,13 +15,33 @@ public class ClimaWebClient {
         this.webClient = webClientBuilder.baseUrl("http://apiadvisor.climatempo.com.br/api/v1").build();
     }
 
-    public Flux<AdvCidade> listaCidadesClima() {
-        Flux<AdvCidade> advCidadeFlux = webClient
+    public Mono<AdvCidadeClima> procuraCidadeId(String nome) {
+        Mono<AdvCidadeClima> advCidadeFlux = webClient
                 .get()
-                .uri("locale/city?name=São Paulo&state=SP&token=68caadc4ccd2aea288509d72b469eb4f")
+                .uri("/locale/city?name=" + nome +
+                        "&token=0aa576f01bd436ce6c68b12fa2e4d29a")
                 .retrieve()
-                .bodyToFlux(AdvCidade.class);
+                .bodyToFlux(AdvCidadeClima.class).next();
         return advCidadeFlux;
+    }
+
+
+    public Mono<AdvCidadeClima> procuraCidadeTemperatura(String nomeCidade, String UF) {
+        return procuraCidadeId(nomeCidade)
+                .flatMap(cidade -> {
+
+                    return webClient
+                            .get()
+                            .uri("/climate/temperature/locale/" + cidade.getId() +
+                                    "?token=0aa576f01bd436ce6c68b12fa2e4d29a")
+                            .retrieve()
+                            .bodyToMono(AdvCidadeClima.class)
+                            .doOnError(e -> System.out.println(e.getMessage()));
+                })
+                .onErrorResume(e -> {
+                    System.out.println(e.getMessage());
+                    return Mono.error(new RuntimeException("City temperature request failed"));
+                });
     }
 }
 
